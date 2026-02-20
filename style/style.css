@@ -1,1 +1,34 @@
+body {
+  font-family: Arial;
+  background: #a2d2ff;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
 
+.page { display: none; }
+.active { display: block; }
+
+.card {
+  background: white;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.nav button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #4CAF50;
+  color: white;
+}
+
+.nav button.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
