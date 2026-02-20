@@ -468,6 +468,24 @@ function initAvoidGame(){
       return Math.sqrt(dx * dx + dy * dy) < aR + bR;
   }
 
+  function handleGameOver() {
+      gameRunning = false;
+      gameOverText.style.display = "block";
+
+      // Récompenser les pets
+      pets.forEach(p => {
+          p.happiness = Math.min(100, p.happiness + 15);
+      });
+      coins += score;
+      save(); update();
+
+      // Après 5 secondes, retourner à la page jeux
+      setTimeout(() => {
+          gameOverText.style.display = "none";
+          showPage("games");
+      }, 5000);
+  }
+
   function update() {
       if (!gameRunning) return;
 
@@ -486,8 +504,13 @@ function initAvoidGame(){
           e.x += e.speed;
 
           if (checkCollisionCircle(mouseX, mouseY, 10, e.x, e.y, e.radius)) {
-              if (shieldActive) { shieldActive = false; enemies.splice(i,1); }
-              else { gameRunning=false; gameOverText.style.display="block"; }
+              if (shieldActive) {
+                  shieldActive = false;
+                  enemies.splice(i,1);
+              } else {
+                  handleGameOver();
+                  return;
+              }
           }
 
           ctx.beginPath();
@@ -496,7 +519,11 @@ function initAvoidGame(){
           ctx.fill();
           ctx.closePath();
 
-          if (e.x - e.radius > canvas.width) { enemies.splice(i,1); score++; scoreDisplay.textContent="Score : "+score; }
+          if (e.x - e.radius > canvas.width) {
+              enemies.splice(i,1);
+              score++;
+              scoreDisplay.textContent = "Score : " + score;
+          }
       }
 
       // Bonus
@@ -504,7 +531,10 @@ function initAvoidGame(){
           const b = bonuses[i];
           b.x += b.speed;
 
-          if (checkCollisionCircle(mouseX, mouseY, 10, b.x, b.y, b.radius)) { shieldActive=true; bonuses.splice(i,1); }
+          if (checkCollisionCircle(mouseX, mouseY, 10, b.x, b.y, b.radius)) {
+              shieldActive = true;
+              bonuses.splice(i,1);
+          }
 
           ctx.beginPath();
           ctx.arc(b.x, b.y, b.radius, 0, Math.PI*2);
