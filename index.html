@@ -35,11 +35,10 @@ body {
   color: white;
 }
 
-.nav button.disabled {
+  button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
-
 .bar {
   height: 15px;
   background: #eee;
@@ -97,7 +96,6 @@ canvas#gameCanvas {
 <body>
 
 <div class="nav">
-  <button onclick="showPage('home')">🏠 Accueil</button>
   <button onclick="showPetPage()">🐾 Animal</button>
   <button onclick="showPage('shop')">🛒 Boutique</button>
   <button onclick="showPage('adoption')">🐣 Adoption</button>
@@ -118,9 +116,9 @@ canvas#gameCanvas {
   <div class="card">
     <h1>🐣 Adoption</h1>
     <input type="text" id="petNameInput" placeholder="Nom de ton animal"><br><br>
-    <button onclick="adopt('dragon')">🐉 Dragon</button>
-    <button onclick="adopt('cat')">🐱 Chat</button>
-    <button onclick="adopt('blob')">👾 Blob</button>
+      <button id="adoptDragon" onclick="adopt('dragon')">🐉 Dragon</button>
+      <button id="adoptCat" onclick="adopt('cat')">🐱 Chat</button>
+      <button id="adoptBlob" onclick="adopt('blob')">👾 Blob</button>
   </div>
 </div>
 
@@ -193,6 +191,21 @@ canvas#gameCanvas {
   </div>
 </div>
 <script>
+const petNameInput = document.getElementById("petNameInput");
+const adoptButtons = [
+  document.getElementById("adoptDragon"),
+  document.getElementById("adoptCat"),
+  document.getElementById("adoptBlob")
+];
+
+// Désactive les boutons par défaut
+adoptButtons.forEach(btn => btn.disabled = true);
+
+// Écoute les changements dans le champ de texte
+petNameInput.addEventListener("input", () => {
+  const hasName = petNameInput.value.trim() !== "";
+  adoptButtons.forEach(btn => btn.disabled = !hasName);
+});
 // ================= PET GAME =================
 
 let pets = [];
