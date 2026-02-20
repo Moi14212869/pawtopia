@@ -34,6 +34,7 @@ body {
   background: #4CAF50;
   color: white;
 }
+
 .nav button.disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -91,15 +92,12 @@ canvas#gameCanvas {
     display: block;
     margin: auto;
 }
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
 </style>
 </head>
 <body>
 
 <div class="nav">
+  <button onclick="showPage('home')">🏠 Accueil</button>
   <button onclick="showPetPage()">🐾 Animal</button>
   <button onclick="showPage('shop')">🛒 Boutique</button>
   <button onclick="showPage('adoption')">🐣 Adoption</button>
@@ -120,9 +118,9 @@ button:disabled {
   <div class="card">
     <h1>🐣 Adoption</h1>
     <input type="text" id="petNameInput" placeholder="Nom de ton animal"><br><br>
-      <button id="adoptDragon" onclick="adopt('dragon')">🐉 Dragon</button>
-      <button id="adoptCat" onclick="adopt('cat')">🐱 Chat</button>
-      <button id="adoptBlob" onclick="adopt('blob')">👾 Blob</button>
+    <button onclick="adopt('dragon')">🐉 Dragon</button>
+    <button onclick="adopt('cat')">🐱 Chat</button>
+    <button onclick="adopt('blob')">👾 Blob</button>
   </div>
 </div>
 
@@ -195,21 +193,6 @@ button:disabled {
   </div>
 </div>
 <script>
-const petNameInput = document.getElementById("petNameInput");
-const adoptButtons = [
-  document.getElementById("adoptDragon"),
-  document.getElementById("adoptCat"),
-  document.getElementById("adoptBlob")
-];
-
-function updateAdoptButtons() {
-  const hasName = petNameInput.value.trim() !== "";
-  adoptButtons.forEach(btn => btn.disabled = !hasName);
-}
-
-petNameInput.addEventListener("input", updateAdoptButtons);
-
-updateAdoptButtons();
 // ================= PET GAME =================
 
 let pets = [];
