@@ -322,11 +322,20 @@ function revealAll(){ for(let i=0;i<board.length;i++) revealed[i]=true; renderBo
 
 // ===== RECOMPENSE PET =====
 function rewardPet(){
-  if(activePetIndex===null) return;
-  const pet = pets[activePetIndex];
-  pet.coins += 10;
-  pet.happiness = Math.min(100, pet.happiness + 15);
-  save(); update();
+  if(pets.length === 0) return;
+
+  // 💰 Récompense pièces uniquement pour l'animal actif
+  if(activePetIndex !== null){
+    pets[activePetIndex].coins += 10;
+  }
+
+  // 😊 Bonus bonheur pour TOUS les animaux
+  pets.forEach(pet => {
+    pet.happiness = Math.min(100, pet.happiness + 15);
+  });
+
+  save();
+  update();
 }
 
 initGame();
