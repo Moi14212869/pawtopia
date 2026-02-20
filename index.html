@@ -202,14 +202,14 @@ const adoptButtons = [
   document.getElementById("adoptBlob")
 ];
 
-// Désactive les boutons par défaut
-adoptButtons.forEach(btn => btn.disabled = true);
-
-// Écoute les changements dans le champ de texte
-petNameInput.addEventListener("input", () => {
+function updateAdoptButtons() {
   const hasName = petNameInput.value.trim() !== "";
   adoptButtons.forEach(btn => btn.disabled = !hasName);
-});
+}
+
+petNameInput.addEventListener("input", updateAdoptButtons);
+
+updateAdoptButtons();
 // ================= PET GAME =================
 
 let pets = [];
