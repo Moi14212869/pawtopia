@@ -34,11 +34,11 @@ body {
   background: #4CAF50;
   color: white;
 }
-
-  button:disabled {
+.nav button.disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
 .bar {
   height: 15px;
   background: #eee;
@@ -90,6 +90,10 @@ canvas#gameCanvas {
     cursor: none; /* masque le curseur */
     display: block;
     margin: auto;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 </style>
 </head>
