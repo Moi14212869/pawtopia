@@ -563,29 +563,6 @@ function initAvoidGame(){
 
       if(b.x - b.radius > canvas.width) bonuses.splice(i,1);
   }
-      }
-
-      // Bonus
-      for(let i=bonuses.length-1;i>=0;i--){
-          const b = bonuses[i];
-          b.x += b.speed;
-
-          if(checkCollisionCircle(mouseX, mouseY,10,b.x,b.y,b.radius)){
-              shieldActive = true;
-              bonuses.splice(i,1);
-          }
-
-          ctx.beginPath();
-          const bg = ctx.createRadialGradient(b.x,b.y,2,b.x,b.y,b.radius);
-          bg.addColorStop(0,"lime");
-          bg.addColorStop(1,"green");
-          ctx.fillStyle = bg;
-          ctx.arc(b.x,b.y,b.radius,0,Math.PI*2);
-          ctx.fill();
-          ctx.closePath();
-
-          if(b.x - b.radius > canvas.width) bonuses.splice(i,1);
-      }
 
       requestAnimationFrame(update);
   }
