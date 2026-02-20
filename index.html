@@ -218,18 +218,13 @@ function updateNavState() {
   const navButtons = document.querySelectorAll(".nav button");
 
   navButtons.forEach(btn => {
-    // Bloque tous les boutons sauf Accueil et Adoption si aucun animal n'existe
+    // Si aucun pet et ce n'est pas Accueil ou Adoption
     if (pets.length === 0 && !btn.textContent.includes("🏠") && !btn.textContent.includes("🐣")) {
       btn.classList.add("disabled");
-
-      // Empêche le clic et affiche un message
-      btn.onclick = (e) => {
-        e.preventDefault();
-        alert("🚫 Adopte un animal avant de cliquer ici !");
-      };
+      btn.disabled = true; // bloque le bouton
     } else {
       btn.classList.remove("disabled");
-      btn.onclick = null; // remet le comportement normal
+      btn.disabled = false; // réactive le bouton
     }
   });
 }
