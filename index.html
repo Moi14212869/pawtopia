@@ -144,18 +144,30 @@ body {
     <button onclick="buyFood()">Acheter nourriture (10💰)</button>
   </div>
 </div>
-
-<!-- JEUX -->
 <div id="games" class="page">
   <div class="card">
-    <h1>🎮 Mini Démineur</h1>
-    <div id="board"></div>
-    <p id="message"></p>
-    <button onclick="initGame()">Rejouer</button>
-    <p>Clic gauche = révéler | Clic droit = drapeau 🚩</p>
+    <h1>🎮 Jeux</h1>
+    <p>Choisis un mini-jeu :</p>
+
+    <button onclick="showPage('demineur'); initGame();">
+      💣 Mini Démineur
+    </button>
   </div>
 </div>
+<!-- PAGE DEMINEUR -->
+<div id="demineur" class="page">
+  <div class="card">
+    <h1>💣 Mini Démineur</h1>
 
+    <div id="board"></div>
+    <p id="message"></p>
+
+    <button onclick="initGame()">Rejouer</button>
+    <button onclick="showPage('games')">⬅ Retour aux jeux</button>
+
+    <p>Clic gauche = révéler | Clic droit = 🚩</p>
+  </div>
+</div>
 <script>
 // ================= PET GAME =================
 
