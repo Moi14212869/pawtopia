@@ -35,7 +35,8 @@ body {
   color: white;
 }
 
-.nav button:disabled {
+.nav button.disabled {
+  cursor: not-allowed;
   opacity: 0.5;
 }
 
@@ -87,15 +88,9 @@ canvas#gameCanvas {
     border-radius: 20px;
     border: 4px solid #0ff;
     box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #0ff inset;
-    cursor: none;
+    cursor: none; /* masque le curseur */
     display: block;
     margin: auto;
-}
-
-/* ===== Curseur 🚫 et boutons bloqués ===== */
-.nav button.disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
 </style>
 </head>
@@ -160,8 +155,6 @@ canvas#gameCanvas {
     <button onclick="buyFood()">Acheter nourriture (10💰)</button>
   </div>
 </div>
-
-<!-- JEUX -->
 <div id="games" class="page">
   <div class="card">
     <h1>🎮 Jeux</h1>
@@ -171,7 +164,6 @@ canvas#gameCanvas {
     <button onclick="showPage('avoidGame'); initAvoidGame();">🏃 Évite les boules</button>
   </div>
 </div>
-
 <!-- PAGE DEMINEUR -->
 <div id="demineur" class="page">
   <div class="card">
@@ -186,8 +178,7 @@ canvas#gameCanvas {
     <p>Clic gauche = révéler | Clic droit = 🚩</p>
   </div>
 </div>
-
-<!-- ÉVITE LES BOULES -->
+  <!-- ÉVITE LES BOULES -->
 <div id="avoidGame" class="page">
   <div class="card" style="padding:0; background:none; box-shadow:none;">
     <h1 style="color:white;">🏃 Évite les boules !</h1>
@@ -201,7 +192,6 @@ canvas#gameCanvas {
     </button>
   </div>
 </div>
-
 <script>
 // ================= PET GAME =================
 
@@ -224,7 +214,31 @@ function showPetPage(){
   }
   showPage("pet");
 }
+function updateNavState() {
+  const navButtons = document.querySelectorAll(".nav button");
 
+  navButtons.forEach(btn => {
+    // Bloque tous les boutons sauf Accueil et Adoption si aucun animal n'existe
+    if (pets.length === 0 && !btn.textContent.includes("🏠") && !btn.textContent.includes("🐣")) {
+      btn.classList.add("disabled");
+
+      // Empêche le clic et affiche un message
+      btn.onclick = (e) => {
+        e.preventDefault();
+        alert("🚫 Adopte un animal avant de cliquer ici !");
+      };
+    } else {
+      btn.classList.remove("disabled");
+      btn.onclick = null; // remet le comportement normal
+    }
+  });
+}
+
+// Appelle cette fonction après le chargement
+load();
+updateNavState();
+
+// Et après chaque adoption
 function adopt(species){
   const name = document.getElementById("petNameInput").value || "SansNom";
   const newPet = { name, species, hunger:50, happiness:50, level:1 };
@@ -243,7 +257,9 @@ function adopt(species){
 }
 
 function save(){
-  localStorage.setItem("petGameFinal", JSON.stringify({ pets, activePetIndex, coins }));
+  localStorage.setItem("petGameFinal", JSON.stringify({
+    pets, activePetIndex, coins
+  }));
 }
 
 function load(){
@@ -317,24 +333,9 @@ setInterval(()=>{
   });
   save(); update();
 }, 1800000);
-
-// ================= NAVIGATION BLOQUÉE SI PAS D'ANIMAL =================
-function updateNavState() {
-  const navButtons = document.querySelectorAll(".nav button");
-  navButtons.forEach(btn => {
-    if (pets.length === 0 && !btn.textContent.includes("🏠") && !btn.textContent.includes("🐣")) {
-      btn.classList.add("disabled");
-      btn.onclick = (e) => { e.preventDefault(); alert("🚫 Adopte un animal avant de cliquer ici !"); };
-    } else {
-      btn.classList.remove("disabled");
-      btn.onclick = null;
-    }
-  });
-}
-
-// Charger les données et mettre à jour les boutons
+  
 load();
-updateNavState();
+
 
 // ================= DEMINEUR =================
 
@@ -458,9 +459,6 @@ function rewardAllPets(){
   });
   save(); update();
 }
-
-// ================= ÉVITE LES BOULES =================
-
 function initAvoidGame(){
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
@@ -489,7 +487,7 @@ function initAvoidGame(){
           y: Math.random() * canvas.height,
           radius: 15,
           speed: 3 + Math.random() * 3,
-          color: `hsl(${Math.random()*360}, 80%, 50%)`
+          color: `hsl(${Math.random()*360}, 80%, 50%)` // couleurs vives aléatoires
       });
 
       if (Math.random() < 0.1) {
@@ -512,6 +510,7 @@ function initAvoidGame(){
       gameRunning = false;
       gameOverText.style.display = "block";
 
+      // Récompenser les pets
       pets.forEach(p => {
           p.happiness = Math.min(100, p.happiness + 15);
       });
@@ -527,48 +526,80 @@ function initAvoidGame(){
   function update() {
       if (!gameRunning) return;
 
+      // Fond noir
       ctx.fillStyle = "#000";
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
+      // Afficher score
       ctx.fillStyle = "white";
       ctx.font = "24px Arial";
       ctx.fillText("Score : " + score, 20, 30);
 
+  // Joueur
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(mouseX, mouseY, 10, 0, Math.PI*2);
+  ctx.fillStyle = shieldActive ? "lime" : "cyan";
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = shieldActive ? "lime" : "cyan";
+  ctx.fill();
+  ctx.closePath();
+  ctx.restore();
+
+  // Ennemis
+  for(let i=enemies.length-1;i>=0;i--){
+      const e = enemies[i];
+      e.x += e.speed;
+
+      if(checkCollisionCircle(mouseX, mouseY,10,e.x,e.y,e.radius)){
+          if(shieldActive){ shieldActive=false; enemies.splice(i,1);}
+          else{ handleGameOver(); return; }
+      }
+
       ctx.save();
       ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 10, 0, Math.PI*2);
-      ctx.fillStyle = shieldActive ? "lime" : "cyan";
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = shieldActive ? "lime" : "cyan";
+      ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);
+      ctx.fillStyle = e.color;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = e.color;
       ctx.fill();
       ctx.closePath();
       ctx.restore();
 
-      for(let i=enemies.length-1;i>=0;i--){
-          const e = enemies[i];
-          e.x += e.speed;
+      if(e.x - e.radius > canvas.width){ enemies.splice(i,1); score++; }
+  }
 
-          if(checkCollisionCircle(mouseX, mouseY,10,e.x,e.y,e.radius)){
-              if(shieldActive){ shieldActive=false; enemies.splice(i,1);}
-              else{ handleGameOver(); return; }
-          }
+  // Bonus
+  for(let i=bonuses.length-1;i>=0;i--){
+      const b = bonuses[i];
+      b.x += b.speed;
 
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);
-          ctx.fillStyle = e.color;
-          ctx.shadowBlur = 15;
-          ctx.shadowColor = e.color;
-          ctx.fill();
-          ctx.closePath();
-          ctx.restore();
-
-          if(e.x - e.radius > canvas.width){ enemies.splice(i,1); score++; }
+      if(checkCollisionCircle(mouseX, mouseY,10,b.x,b.y,b.radius)){
+          shieldActive = true;
+          bonuses.splice(i,1);
       }
 
-      for(let i=bonuses.length-1;i>=0;i--){
-          const b = bonuses[i];
-          b.x += b.speed;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(b.x,b.y,b.radius,0,Math.PI*2);
+      ctx.fillStyle = "lime";
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "lime";
+      ctx.fill();
+      ctx.closePath();
+      ctx.restore();
 
-          if(checkCollisionCircle(mouseX, mouseY,10,b.x,b.y,b.radius)){
-             
+      if(b.x - b.radius > canvas.width) bonuses.splice(i,1);
+  }
+
+      requestAnimationFrame(update);
+  }
+
+  setInterval(spawnEnemy, 800);
+  update();
+}
+initGame();
+</script>
+
+</body>
+</html>
