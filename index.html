@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Mini Pet World</title>
+
 <style>
-/* ==== STYLE GENERAL === */
 body {
   font-family: Arial;
   background: linear-gradient(to bottom, #a2d2ff, white);
@@ -37,7 +37,6 @@ body {
 
 .nav button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .bar {
@@ -53,7 +52,8 @@ body {
   background: #4CAF50;
 }
 
-/* ==== STYLE DEMINEUR === */
+/* ===== DÉMINEUR ===== */
+
 #board {
   display: grid;
   grid-template-columns: repeat(5, 50px);
@@ -86,37 +86,33 @@ body {
 </head>
 <body>
 
-<!-- NAVIGATION -->
 <div class="nav">
-  <button onclick="showPage('home')">🏠 Accueil</button>
   <button onclick="showPetPage()">🐾 Animal</button>
   <button onclick="showPage('shop')">🛒 Boutique</button>
   <button onclick="showPage('adoption')">🐣 Adoption</button>
   <button onclick="showPage('games')">🎮 Jeux</button>
 </div>
 
-<!-- PAGE ACCUEIL -->
+<!-- ACCUEIL -->
 <div id="home" class="page active">
   <div class="card">
     <h1>🌍 Mini Pet World</h1>
     <p>Bienvenue dans ton monde virtuel !</p>
-    <button onclick="showPage('adoption')">Adopter un animal</button>
   </div>
 </div>
 
-<!-- PAGE ADOPTION -->
+<!-- ADOPTION -->
 <div id="adoption" class="page">
   <div class="card">
     <h1>🐣 Adoption</h1>
     <input type="text" id="petNameInput" placeholder="Nom de ton animal"><br><br>
-    <p>Choisis une espèce :</p>
     <button onclick="adopt('dragon')">🐉 Dragon</button>
-    <button onclick="adopt('cat')">🐱 Chat Magique</button>
+    <button onclick="adopt('cat')">🐱 Chat</button>
     <button onclick="adopt('blob')">👾 Blob</button>
   </div>
 </div>
 
-<!-- PAGE ANIMAL -->
+<!-- ANIMAL -->
 <div id="pet" class="page">
   <div class="card">
     <h1>🐾 Mon Animal</h1>
@@ -124,7 +120,7 @@ body {
     <h2 id="name"></h2>
 
     <p>⭐ Niveau: <span id="level"></span></p>
-    <p>💰 Pièces: <span id="coins"></span></p>
+    <p>💰 Pièces communes: <span id="coins"></span></p>
 
     <p>🍎 Faim</p>
     <div class="bar"><div id="hungerBar" class="fill"></div></div>
@@ -132,37 +128,39 @@ body {
     <p>😊 Bonheur</p>
     <div class="bar"><div id="happyBar" class="fill"></div></div>
 
-    <button onclick="feed()">Nourrir</button>
+    <button onclick="feed()">Nourrir (-1💰)</button>
 
     <h3>📋 Mes animaux</h3>
     <div id="petList"></div>
   </div>
 </div>
 
-<!-- PAGE BOUTIQUE -->
+<!-- BOUTIQUE -->
 <div id="shop" class="page">
   <div class="card">
     <h1>🛒 Boutique</h1>
-    <p>💰 Pièces: <span id="shopCoins"></span></p>
+    <p>💰 Pièces communes: <span id="shopCoins"></span></p>
     <button onclick="buyFood()">Acheter nourriture (10💰)</button>
   </div>
 </div>
 
-<!-- PAGE JEUX -->
+<!-- JEUX -->
 <div id="games" class="page">
   <div class="card">
     <h1>🎮 Mini Démineur</h1>
     <div id="board"></div>
     <p id="message"></p>
     <button onclick="initGame()">Rejouer</button>
-    <p>⚠️ Clique gauche pour révéler, clic droit pour placer un drapeau 🚩</p>
+    <p>Clic gauche = révéler | Clic droit = drapeau 🚩</p>
   </div>
 </div>
 
 <script>
-// ========================= PET GAME =========================
+// ================= PET GAME =================
+
 let pets = [];
 let activePetIndex = null;
+let coins = 0;
 
 const speciesData = { dragon:"🐉", cat:"🐱", blob:"👾" };
 
@@ -173,87 +171,113 @@ function showPage(id){
 
 function showPetPage(){
   if(activePetIndex === null){
-    alert("Tu dois adopter un animal d'abord !");
+    alert("Adopte un animal !");
     showPage("adoption");
     return;
   }
   showPage("pet");
 }
 
-function lockNav(){
-  document.querySelectorAll(".nav button").forEach(btn=>{
-    if(!btn.textContent.includes("Adoption")){
-      btn.disabled = true;
-    }
-  });
-}
-
-function unlockNav(){
-  document.querySelectorAll(".nav button").forEach(btn=>{
-    btn.disabled = false;
-  });
-}
-
 function adopt(species){
   const name = document.getElementById("petNameInput").value || "SansNom";
-  const newPet = { name:name, species:species, hunger:50, happiness:50, level:1, coins:20 };
+  const newPet = { name, species, hunger:50, happiness:50, level:1 };
+
+  if(pets.length === 0){
+    coins = 20;
+  }
+
   pets.push(newPet);
   activePetIndex = pets.length-1;
-  save(); unlockNav(); update(); showPage("pet");
+
+  save(); update(); showPage("pet");
 }
 
 function save(){
-  localStorage.setItem("petGameMultiV7", JSON.stringify({ pets:pets, activePetIndex:activePetIndex }));
+  localStorage.setItem("petGameFinal", JSON.stringify({
+    pets, activePetIndex, coins
+  }));
 }
 
 function load(){
-  const data = localStorage.getItem("petGameMultiV7");
+  const data = localStorage.getItem("petGameFinal");
   if(data){
     const parsed = JSON.parse(data);
     pets = parsed.pets || [];
     activePetIndex = parsed.activePetIndex;
-    if(pets.length > 0 && activePetIndex !== null){
-      update(); showPage("pet"); unlockNav();
-    } else { showPage("adoption"); lockNav(); }
-  } else { showPage("adoption"); lockNav(); }
+    coins = parsed.coins || 0;
+  }
+  if(pets.length > 0 && activePetIndex !== null){
+    update();
+    showPage("pet");
+  } else {
+    showPage("adoption");
+  }
 }
 
 function update(){
   if(activePetIndex === null) return;
+
   const pet = pets[activePetIndex];
+
   document.getElementById("name").textContent = pet.name;
   document.getElementById("petImage").textContent = speciesData[pet.species];
   document.getElementById("level").textContent = pet.level;
-  document.getElementById("coins").textContent = pet.coins;
-  document.getElementById("shopCoins").textContent = pet.coins;
+  document.getElementById("coins").textContent = coins;
+  document.getElementById("shopCoins").textContent = coins;
+
   document.getElementById("hungerBar").style.width = pet.hunger + "%";
   document.getElementById("happyBar").style.width = pet.happiness + "%";
 
-  const list = document.getElementById("petList"); list.innerHTML = "";
+  const list = document.getElementById("petList");
+  list.innerHTML = "";
+
   pets.forEach((p,index)=>{
     const btn = document.createElement("button");
-    btn.textContent = speciesData[p.species]+" "+p.name;
-    btn.onclick = ()=>{ activePetIndex=index; save(); update(); showPage("pet"); };
+    btn.textContent = speciesData[p.species] + " " + p.name;
+    btn.onclick = ()=>{
+      activePetIndex = index;
+      save(); update();
+    };
     list.appendChild(btn);
   });
 }
 
-function feed(){ const pet = pets[activePetIndex]; if(pet.coins<=0) return alert("Pas assez de pièces !"); pet.hunger=Math.max(0,pet.hunger-15); pet.coins-=1; save(); update();}
-function buyFood(){ const pet = pets[activePetIndex]; if(pet.coins>=10){pet.coins-=10; alert("🍎 Nourriture achetée !"); save(); update();}else{alert("Pas assez de pièces !");}}
-
-// Dégradation lente : 1% toutes les 30 minutes
-setInterval(()=>{
-  if(activePetIndex===null) return;
+function feed(){
+  if(coins <= 0) return alert("Pas assez de pièces !");
   const pet = pets[activePetIndex];
-  pet.hunger = Math.min(100, pet.hunger + 1); // 1% par 30min
-  pet.happiness = Math.max(0, pet.happiness - 1);
+  pet.hunger = Math.max(0, pet.hunger - 15);
+  coins -= 1;
   save(); update();
-}, 1800000); // 1% toutes les 30 minutes = 1800000 ms
+}
+
+function buyFood(){
+  if(coins >= 10){
+    coins -= 10;
+    alert("🍎 Nourriture achetée !");
+    save(); update();
+  } else {
+    alert("Pas assez de pièces !");
+  }
+}
+
+// Dégradation lente (1% toutes les 30 min)
+setInterval(()=>{
+  if(activePetIndex === null) return;
+  pets.forEach(p=>{
+    p.hunger = Math.min(100, p.hunger + 1);
+    p.happiness = Math.max(0, p.happiness - 1);
+  });
+  save(); update();
+}, 1800000);
 
 load();
 
-// ========================= DEMINEUR =========================
-const boardSize=5; const bombCount=5;
+
+// ================= DEMINEUR =================
+
+const boardSize=5;
+const bombCount=5;
+
 let flags=[], board=[], revealed=[], gameOver=false;
 
 function initGame(){
@@ -263,13 +287,15 @@ function initGame(){
   gameOver=false;
   document.getElementById("message").textContent="";
 
-  // placer bombes
   let bombsPlaced=0;
   while(bombsPlaced<bombCount){
     const index=Math.floor(Math.random()*board.length);
     if(board[index]!=="B"){
-      board[index]="B"; bombsPlaced++;
-      getNeighbors(index).forEach(i=>{ if(board[i]!=="B") board[i]++; });
+      board[index]="B";
+      bombsPlaced++;
+      getNeighbors(index).forEach(i=>{
+        if(board[i]!=="B") board[i]++;
+      });
     }
   }
   renderBoard();
@@ -278,67 +304,100 @@ function initGame(){
 function renderBoard(){
   const boardDiv=document.getElementById("board");
   boardDiv.innerHTML="";
+
   board.forEach((val,index)=>{
     const cell=document.createElement("div");
     cell.classList.add("cell");
+
     if(revealed[index]){
       cell.classList.add("revealed");
-      if(val==="B"){ cell.classList.add("bomb"); cell.textContent="💣"; }
-      else if(val>0) cell.textContent=val;
-    }else if(flags[index]){ cell.textContent="🚩"; }
+      if(val==="B"){
+        cell.classList.add("bomb");
+        cell.textContent="💣";
+      } else if(val>0){
+        cell.textContent=val;
+      }
+    } else if(flags[index]){
+      cell.textContent="🚩";
+    }
+
     cell.addEventListener("click",()=>revealCell(index));
-    cell.addEventListener("contextmenu",(e)=>{ e.preventDefault(); toggleFlag(index); });
+    cell.addEventListener("contextmenu",(e)=>{
+      e.preventDefault();
+      toggleFlag(index);
+    });
+
     boardDiv.appendChild(cell);
   });
 }
 
 function getNeighbors(index){
-  const neighbors=[]; const row=Math.floor(index/boardSize); const col=index%boardSize;
-  for(let dr=-1;dr<=1;dr++){ for(let dc=-1;dc<=1;dc++){
-    if(dr===0 && dc===0) continue;
-    const r=row+dr, c=col+dc;
-    if(r>=0 && r<boardSize && c>=0 && c<boardSize) neighbors.push(r*boardSize+c);
-  }}
+  const neighbors=[];
+  const row=Math.floor(index/boardSize);
+  const col=index%boardSize;
+
+  for(let dr=-1;dr<=1;dr++){
+    for(let dc=-1;dc<=1;dc++){
+      if(dr===0 && dc===0) continue;
+      const r=row+dr;
+      const c=col+dc;
+      if(r>=0 && r<boardSize && c>=0 && c<boardSize){
+        neighbors.push(r*boardSize+c);
+      }
+    }
+  }
   return neighbors;
 }
 
-function toggleFlag(index){ if(revealed[index] || gameOver) return; flags[index]=!flags[index]; renderBoard(); }
+function toggleFlag(index){
+  if(revealed[index] || gameOver) return;
+  flags[index]=!flags[index];
+  renderBoard();
+}
 
 function revealCell(index){
   if(gameOver || revealed[index]) return;
+
   revealed[index]=true;
-  if(board[index]==="B"){ gameOver=true; document.getElementById("message").textContent="💥 BOOM ! Perdu."; revealAll(); return;}
-  if(board[index]===0) getNeighbors(index).forEach(revealCell);
-  if(revealed.filter((v,i)=>!v && board[i]!=="B").length===0){ 
-    gameOver=true; 
-    document.getElementById("message").textContent="🎉 Gagné ! +10 pièces et +15 bonheur !"; 
-    revealAll(); 
-    rewardPet();
+
+  if(board[index]==="B"){
+    gameOver=true;
+    document.getElementById("message").textContent="💥 BOOM ! Perdu.";
+    revealAll();
+    return;
+  }
+
+  if(board[index]===0){
+    getNeighbors(index).forEach(revealCell);
+  }
+
+  if(revealed.filter((v,i)=>!v && board[i]!=="B").length===0){
+    gameOver=true;
+    document.getElementById("message").textContent="🎉 Gagné ! +10💰 +15😊 pour tous !";
+    revealAll();
+    rewardAllPets();
+  }
+
+  renderBoard();
+}
+
+function revealAll(){
+  for(let i=0;i<board.length;i++){
+    revealed[i]=true;
   }
   renderBoard();
 }
 
-function revealAll(){ for(let i=0;i<board.length;i++) revealed[i]=true; renderBoard(); }
-
-// ===== RECOMPENSE PET =====
-function rewardPet(){
-  if(pets.length === 0) return;
-
-  // 💰 Récompense pièces uniquement pour l'animal actif
-  if(activePetIndex !== null){
-    pets[activePetIndex].coins += 10;
-  }
-
-  // 😊 Bonus bonheur pour TOUS les animaux
-  pets.forEach(pet => {
-    pet.happiness = Math.min(100, pet.happiness + 15);
+function rewardAllPets(){
+  coins += 10;
+  pets.forEach(p=>{
+    p.happiness = Math.min(100, p.happiness + 15);
   });
-
-  save();
-  update();
+  save(); update();
 }
 
 initGame();
 </script>
+
 </body>
 </html>
