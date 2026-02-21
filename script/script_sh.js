@@ -1,6 +1,6 @@
 // Tirage aléatoire de 2 aliments par jour
 function showDailyFood() {
-  fetch("food.json")
+  fetch("data/food.json")
     .then(response => response.json())
     .then(data => {
       const aliments = [...data.nourritures];
