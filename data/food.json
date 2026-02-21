@@ -1,9 +1,9 @@
 {
   "nourritures": [
-    { "type": "Pizza", "prix": 80.50, "image": "images/pizza.png" },
-    { "type": "Burger", "prix": 60.90, "image": "images/burger.png" },
-    { "type": "Salade", "prix": 50.20, "image": "images/salade.png" },
-    { "type": "Sushi", "prix": 120.00, "image": "images/sushi.png" },
-    { "type": "Tacos", "prix": 70.50, "image": "images/tacos.png" }
+    { "type": "Pizza", "prix": 80.50, "image": "image/pizza.png" },
+    { "type": "Burger", "prix": 60.90, "image": "image/burger.png" },
+    { "type": "Salade", "prix": 50.20, "image": "image/salade.png" },
+    { "type": "Sushi", "prix": 120.00, "image": "image/sushi.png" },
+    { "type": "Tacos", "prix": 70.50, "image": "image/tacos.png" }
   ]
 }
