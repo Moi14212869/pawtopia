@@ -1,0 +1,37 @@
+#board {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  grid-gap: 3px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: #ddd;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 50px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid #aaa;
+}
+
+.cell.revealed {
+  background-color: white;
+  cursor: default;
+}
+
+.cell.bomb {
+  background-color: #ff4d4d;
+}
+canvas#gameCanvas {
+    background: #000;
+    border-radius: 20px;
+    border: 4px solid #0ff;
+    box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #0ff inset;
+    cursor: none; /* masque le curseur */
+    display: block;
+    margin: auto;
+}
