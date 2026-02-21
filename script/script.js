@@ -110,16 +110,6 @@ function feed(){
   save(); update();
 }
 
-function buyFood(){
-  if(coins >= 10){
-    coins -= 10;
-    alert("🍎 Nourriture achetée !");
-    save(); update();
-  } else {
-    alert("Pas assez de pièces !");
-  }
-}
-
 // Dégradation  : 1% toutes les 30 min
 setInterval(()=>{
   if(activePetIndex === null) return;
