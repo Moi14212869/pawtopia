@@ -65,10 +65,13 @@
 <div id="shop" class="page">
   <div class="card">
     <h1>🛒 Boutique</h1>
-    <p>💰 Pièces communes: <span id="shopCoins"></span></p>
-    <button onclick="buyFood()">Acheter nourriture (10💰)</button>
+    <p>💰 Pièces : <span id="shopCoins"></span></p>
+  </div>
+  <div class="card">
+    <div id="dailyFood"></div>
   </div>
 </div>
+  
 <div id="games" class="page">
   <div class="card">
     <h1>🎮 Jeux</h1>
@@ -99,7 +102,7 @@
     <canvas id="gameCanvas" width="800" height="500"></canvas>
     <div id="score" style="position:relative; top:10px; left:10px; color:white;">Score : 0</div>
     <div id="gameOver" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-size:40px; display:none; text-align:center;">
-      GAME OVER<br>Recharge la page
+      GAME OVER
     </div>
     <button onclick="showPage('games')" style="margin-top:10px; background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">
       ⬅ Retour aux jeux
@@ -109,5 +112,6 @@
 <script src="script/script.js"></script>
 <script src="script/script_de.js"></script>
 <script src="script/script_bo.js"></script>
+<script src="script/script_sh.js"></script>
 </body>
 </html>
