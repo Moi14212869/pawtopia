@@ -35,9 +35,11 @@ function showDailyFood() {
         card.style.display = "inline-block";
         card.style.textAlign = "center";
         card.innerHTML = `
+          <button>
           <img src="${item.image}" alt="${item.type}" style="width:100px; height:80px; object-fit:cover;"><br>
           <strong>${item.type}</strong><br>
           ${item.prix} 💰
+          </boutton>
         `;
         dailyDiv.appendChild(card);
       });
