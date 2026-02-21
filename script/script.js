@@ -129,5 +129,13 @@ setInterval(()=>{
   });
   save(); update();
 }, 1800000);
-  
+
+function rewardAllPets(){
+  coins += 10;
+  pets.forEach(p=>{
+    p.happiness = Math.min(100, p.happiness + 15);
+  });
+  save(); update();
+}
+
 load();
