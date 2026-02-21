@@ -8,7 +8,7 @@ function showDailyFood() {
 
       // Crée un seed basé sur la date du jour
       const today = new Date();
-      const seed = today.getFullYear() + today.getMonth() + today.getDate();
+      let seed = today.getFullYear() + today.getMonth() + today.getDate();
 
       function seededRandom(max) {
         const x = Math.sin(seed++) * 10000;
