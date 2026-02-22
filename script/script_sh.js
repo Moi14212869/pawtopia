@@ -35,7 +35,7 @@ function showDailyFood() {
         card.style.display = "inline-block";
         card.style.textAlign = "center";
         card.innerHTML = `
-          <button>
+          <button onclick="buyFood(${JSON.stringify(item)})">
           <img src="${item.image}" alt="${item.type}" style="width:100px; height:80px; object-fit:cover;"><br>
           <strong>${item.type}</strong><br>
           ${item.prix} 💰
@@ -46,6 +46,18 @@ function showDailyFood() {
     })
     .catch(error => console.error("Erreur :", error));
 }
+function buyFood(item) {
+  let coins = parseInt(document.getElementById('shopCoins').textContent || '0');
 
+  if (coins >= item.prix) {
+    coins -= item.prix;
+    document.getElementById('shopCoins').textContent = coins;
+    addToInventory(item);
+    alert(`${item.type} ajouté à ton inventaire !`);
+    localStorage.setItem('coins', coins);
+  } else {
+    alert("Tu n'as pas assez de pièces !");
+  }
+}
 // Appelle la fonction à l'ouverture du shop
 showDailyFood();
