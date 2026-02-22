@@ -109,7 +109,46 @@ function feed(){
   coins -= 1;
   save(); update();
 }
+// --- INVENTAIRE ---
+let inventory = [];
 
+// Charger l'inventaire depuis localStorage
+function loadInventory() {
+  const saved = localStorage.getItem('inventory');
+  inventory = saved ? JSON.parse(saved) : [];
+  updateInventoryDisplay();
+}
+
+// Met à jour l'affichage de l'inventaire
+function updateInventoryDisplay() {
+  const invDiv = document.getElementById('inventory');
+  invDiv.innerHTML = '';
+  if (inventory.length === 0) {
+    invDiv.innerHTML = '<p>Ton inventaire est vide.</p>';
+    return;
+  }
+
+  inventory.forEach(item => {
+    const div = document.createElement('div');
+    div.style.display = 'inline-block';
+    div.style.border = '1px solid #ccc';
+    div.style.margin = '5px';
+    div.style.padding = '5px';
+    div.style.textAlign = 'center';
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.type}" style="width:80px; height:60px; object-fit:cover;"><br>
+      <strong>${item.type}</strong>
+    `;
+    invDiv.appendChild(div);
+  });
+}
+
+// Ajouter un objet à l'inventaire
+function addToInventory(item) {
+  inventory.push(item);
+  localStorage.setItem('inventory', JSON.stringify(inventory));
+  updateInventoryDisplay();
+}
 // Dégradation  : 1% toutes les 30 min
 setInterval(()=>{
   if(activePetIndex === null) return;
