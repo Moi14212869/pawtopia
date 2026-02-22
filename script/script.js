@@ -1,3 +1,6 @@
+window.onload = function() {
+  loadInventory();
+};
 let pets = [];
 let activePetIndex = null;
 let coins = 0;
