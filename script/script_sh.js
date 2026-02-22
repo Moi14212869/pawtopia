@@ -39,7 +39,7 @@ function showDailyFood() {
           <img src="${item.image}" alt="${item.type}" style="width:100px; height:80px; object-fit:cover;"><br>
           <strong>${item.type}</strong><br>
           ${item.prix} 💰
-          </boutton>
+          </button>
         `;
         dailyDiv.appendChild(card);
       });
