@@ -1,6 +1,6 @@
 const boardSize=5;
 const bombCount=5;
-
+let score = parseInt(localStorage.getItem("score")) || 0;
 let flags=[], board=[], revealed=[], gameOver=false;
 
 function initGame(){
@@ -96,7 +96,9 @@ function revealCell(index){
 
   if(revealed.filter((v,i)=>!v && board[i]!=="B").length===0){
     gameOver=true;
-    document.getElementById("message").textContent="🎉 Gagné ! +10💰 +15😊 pour tous !";
+    document.getElementById("message").textContent="🎉 Gagné ! +10💰 +15😊 !";
+    score++;
+	  localStorage.setItem("score", score);
     revealAll();
     rewardAllPets();
   }
