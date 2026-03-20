@@ -1,3 +1,4 @@
+let onelevel = parseInt(localStorage.getItem("score")) || 0;
 function initAvoidGame(){
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
@@ -48,7 +49,8 @@ function initAvoidGame(){
   function handleGameOver() {
       gameRunning = false;
       gameOverText.style.display = "block";
-
+      onelevel = onelevel + score;
+      localStorage.setItem("score", onelevel);
       // Récompenser les pets
       pets.forEach(p => {
           p.happiness = Math.min(100, p.happiness + 15);
